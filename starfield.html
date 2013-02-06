@@ -23,7 +23,7 @@ html, body {
 var Star = function(x, y) {
     this.x = x;
     this.y = y;
-    this.slope = y / x; // This only works because our origin is always (0,0)
+    this.slope = y / x;
     this.opacity = 0;
     this.speed = Math.max(Math.random() * 3, 1);
 };
@@ -70,7 +70,7 @@ StarField.prototype._updateStarField = function() {
     for (i = 0; i < this.numStars; i++) {
         star = this.starField[i];
         
-        star.speed=Math.abs(Math.sqrt(star.x*star.x+star.y*star.y)) /100;
+        star.speed=Math.sqrt(Math.pow(star.x,2)+Math.pow(star.y,2)) / 100;
         increment = Math.min(star.speed, Math.abs(star.speed / star.slope));
         star.x += (star.x > 0) ? increment : -increment;
         star.y = star.slope * star.x;
