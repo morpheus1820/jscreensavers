@@ -146,7 +146,7 @@ LogoField.prototype._updateLogoField = function() {
                 -this.width / 10, -this.height / 10, 
                    this.width / 5, this.height / 5
             );
-            logo.resetPosition(randomLoc.x, randomLoc.y, this.logoImage);
+            logo.resetPosition(randomLoc.x, randomLoc.y, logo.image);
         }
     }
 };
@@ -169,11 +169,32 @@ LogoField.prototype._renderLogoField = function() {
         this.canvas.fillRect(
             logo.x + this.width / 2, 
             logo.y + this.height / 2, 
-            5, 5);
-	
-        this.canvas.drawImage(logo.image,logo.x + this.width / 2,logo.y + this.height / 2);
+            2, 2);
+        //this.canvas.save();
+        //this.canvas.translate(logo.x + this.width / 2,logo.y + this.height / 2)
+        //this.canvas.scale(0.1,0.1);
+	    //this.canvas.scale(0.1,0.1);
+        this.canvas.drawImage(logo.image,
+        			logo.x + this.width / 2,logo.y + this.height / 2,
+        			30*logo.speed,30*logo.speed);
+        			
+	var imageData = this.canvas.getImageData(logo.x + this.width / 2,logo.y + this.height / 2,
+        			30*logo.speed,30*logo.speed);
+    var pixels = imageData.data;
+    var numPixels = pixels.length;
+    this.canvas.clearRect(logo.x + this.width / 2,logo.y + this.height / 2,
+        			30*logo.speed,30*logo.speed);
+    for (var i = 0; i < numPixels; i++) {
+        pixels[i*4] = 0;
+        pixels[i*4+1] = 100;
+        pixels[i*4+2] = 0;
+    }
+    this.canvas.putImageData(imageData, logo.x + this.width / 2,logo.y + this.height / 2);
+    
+    	//this.canvas.restore();
     }
 };
+
 
 /**
  * Function that handles the animation of each frame. Update the Logofield
@@ -236,10 +257,12 @@ LogoField.prototype._initScene = function(numLogos) {
 
     var logoImage = new Image;
     logoImage.src = "windows_logo.png";
-    logoImage.onLoad = function(){
-	logoImage.style.width = '10%';
+    logoImage.style.width = '10%';
 	logoImage.style.height = 'auto';
-}
+	logoImage.crossOrigin = ''; 
+	// no credentials flag. Same as 
+	logoImage.crossOrigin='anonymous'
+
     	var i;
     	for (i = 0; i < this.numLogos; i++) {
         	this.logoField.push(
@@ -291,6 +314,6 @@ LogoField.prototype.render = function(numLogos) {
 }());
 
 // Kick off!
-var logoField = new LogoField('fullScreen').render(20);
+var logoField = new LogoField('fullScreen').render(50);
 
 </script>
